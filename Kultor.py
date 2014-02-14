@@ -1,10 +1,24 @@
 import sys
 import random
+import os
 
 gameBegun = 0
 
 gameOn = True
 
+class Orgi:
+	
+	def __init__(self, type, name, obscurity, trials, supsci, occult, influence, unknown):
+		self.type=type
+		self.name=name
+		self.ob = obscurity
+		self.trials = trials
+		self.supsci = supsci
+		self.occult = occult
+		self.influ = influence
+		self.unknown = unknown
+		
+		
 class Cultist:
 	stealth = 0
 	cweps = 0
@@ -72,6 +86,18 @@ class Cultist:
 			Cultist.slot2 = None
 		if(remove==Cultist.slot3):
 			Cultist.slot3 = None
+
+def loadnames():
+	rawfile = open("names.txt","r")
+	
+	
+	allnames = rawfile.read()
+	
+	splitnames = allnames.splitlines()
+
+	rawfile.close()
+	
+	return splitnames
 
 def intro():
 		
@@ -147,25 +173,37 @@ def endSetup():
 	gameBegun=1
 	return gameBegun
 
+def events():
+	print 'Stuff happend last turn'
+
+def turnreport():
+	print 'New Turn'
+	
+
 while(gameOn):
+	playerturn = True
 	while(gameBegun==0):
 		intro()
 		mainChoice = initvalues()
 		mchosen= False
 		if(mainChoice==1 and mchosen == False):
-			obscurity = 1
+			obscurity = 2
 			trials = 3
 			supsci = 0
-			occult = 2
-			influence = 2
-			unknowable = 2
+			occult = 4
+			influence = 3
+			unknowable = 3
+			moneystart = 12000
+			troopstart = 5
 		elif(mainChoice==2 and mchosen == False):
 			obscurity = 3
-			trials = 1
+			trials = 3
 			supsci = 0
-			occult = 2
-			influence = 1
-			unknowable = 3
+			occult = 5
+			influence = 2
+			unknowable = 5
+			moneystart = 2000
+			troopstart = 5
 		elif(mainChoice==3 and mchosen == False):
 			obscurity = 2
 			trials = 3
@@ -173,20 +211,26 @@ while(gameOn):
 			occult = 0
 			influence = 3
 			unknowable = 0
+			moneystart = 50000
+			troopstart = 12
 		elif(mainChoice==4 and mchosen == False):
 			obscurity = 1
 			trials = 2
-			supsci = 2
+			supsci = 3
 			occult = 0
 			influence = 3
 			unknowable = 3
+			moneystart = 50000
+			troopstart=10
 		elif(mainChoice==5 and mchosen == False):
 			obscurity = 3
 			trials = 1
 			supsci = 0
 			occult = 1
-			influence = 2
+			influence = 4
 			unknowable = 3
+			moneystart=20000
+			troopstart=15
 		elif(mainChoice==6 and mchosen == False):
 			obscurity = 2
 			trials = 2
@@ -194,9 +238,22 @@ while(gameOn):
 			occult = 0
 			influence = 3
 			unknowable = 1
+			moneystart=100000
+			troopstart=10
 		mchosen = True
-		nameIt()
+		facName = nameIt()
+		player = Orgi(Faction,facName,obscurity,trials,supsci,occult,influence,unknowable)
+		troops = []
+		for i in range(0,troopstart):
+			locallist = loadnames()
+			choosen = random.randint(0,len(locallist))
+			currentName = locallist[choosen]
+			print "name is: "+currentName
+			troops.append(Cultist(currentName,trials,occult,supsci,influence,unknowable))
+		
+		chaching = moneystart
 		gameBegun = endSetup()
-	
-	
-	
+	while(playerturn):
+		turnreport()
+		turnchoice()
+		endturn()
